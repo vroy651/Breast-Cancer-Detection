@@ -5,7 +5,7 @@ import plotly.graph_objects as go
 import numpy as np
 
 def get_data():
-    data=pd.read_csv('/Users/vishalroy/Downloads/devloper/breast cancer detection/data.csv')
+    data=pd.read_csv('Data/data.csv')
 #    print(data.head())
     data=data.drop(['Unnamed: 32','id'],axis=1) # redundant column
     # convert target column 
@@ -66,19 +66,18 @@ def get_scaled_values(inputs_dict):
 
     scaled_X={}
     for key,value in inputs_dict.items():
-        min_value=X[key].min()
-        max_value=X[key].max()
+        min_value=data[key].min()
+        max_value=data[key].max()
         scaled_X[key]=(value-min_value)/(max_value-min_value)
 
     return scaled_X
 
 def make_predictions(inputs_dict):
-    model=pickle.load(open('model.pkl','rb'))
-    scaler=pickle.load(open('scaler.pkl','rb'))
+    model=pickle.load(open('model/model.pkl','rb'))
+    scaler=pickle.load(open('model/scaler.pkl','rb'))
 
     input_arr=np.array(list(inputs_dict.values())).reshape(1,-1)
 
-    #scaled the input array
     scaled_input_arr=scaler.transform(input_arr)
     pred=model.predict(scaled_input_arr)
     
@@ -88,7 +87,7 @@ def make_predictions(inputs_dict):
         st.write('[Benign]')
     else:
         st.write('[malacious]')
-#     st.write(scaled_input_arr)
+
     st.write("probability of being Benign:",model.predict_proba(scaled_input_arr)[0][0])
     st.write("probability of being Malacious:",model.predict_proba(scaled_input_arr)[0][1])
     st.write("Desclaimer \n this app only for expert who poses domain knowledge or doctor")
@@ -149,7 +148,7 @@ def get_radar_plot(input_data):
 
 
 def main():
-    # UI of app 
+    
     st.set_page_config(
         page_title=("Breast Cancer Predictor"),
         page_icon=("doctor:"),
@@ -157,22 +156,20 @@ def main():
         initial_sidebar_state="expanded"
     )
 
-    input_measure=add_sidebar()
-    #st.write(input_measure)
-
+    input_data=add_sidebar()
+    
     with st.container():
         st.title("Breast Cancer Predictor")
         st.write("this app work on the reports of lab ,to check that whether a person has breast cancer or not using machine learning. ")
     col1,col2 =st.columns([4,1])
 
     with col1 :
-        radar_plot=get_radar_plot(input_measure)
+        radar_plot=get_radar_plot(input_data)
         st.plotly_chart(radar_plot)
 
     with col2 :
-        make_predictions(input_measure)
+        make_predictions(input_data)
 
-    
 
 if __name__ == '__main__':
     main()

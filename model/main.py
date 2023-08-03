@@ -34,7 +34,7 @@ def create_model(data):
 
                                                 
 def get_data():
-    data=pd.read_csv('/Users/vishalroy/Downloads/devloper/breast cancer detection/data.csv')
+    data=pd.read_csv('Data/data.csv')
 #    print(data.head())
     data=data.drop(['Unnamed: 32','id'],axis=1) # redundant column
     # convert target column 
@@ -50,10 +50,10 @@ def main():
     model,scaler = create_model(data) # create model
 
     # dump the model and scaler for testing purposes
-    with open('model.pkl','wb')as file:
+    with open('model/model.pkl','wb')as file:
         pickle.dump(model,file)
 
-    with open('scaler.pkl','wb')as file:
+    with open('model/scaler.pkl','wb')as file:
         pickle.dump(scaler,file)
 
     
